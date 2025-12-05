@@ -12,14 +12,29 @@ require '../config/db.php';
 
 // Mode Tambah/Edit
 $is_edit = false;
-$user = ['id' => null, 'nama' => '', 'username' => '', 'role' => '', 'batalyon' => null, 'telegram_id' => '', 'phone' => ''];
+$user = [
+    'id' => null, 
+    'nama' => '', 
+    'username' => '', 
+    'role' => '', 
+    'batalyon' => null, 
+    'telegram_id' => '', 
+    'phone' => ''
+];
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $is_edit = true;
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$_GET['id']]);
-    $user = $stmt->fetch();
-    if (!$user) { header('Location: dashboard_admin.php'); exit; }
+    $data_user = $stmt->fetch();
+    
+    if ($data_user) { 
+        // Gabungkan dengan default $user agar kunci yang tidak ada tetap terdefinisi
+        $user = array_merge($user, $data_user); 
+    } else {
+        header('Location: dashboard_admin.php'); 
+        exit; 
+    }
 }
 ?>
 
@@ -76,14 +91,14 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                     </div>
                                 </div>
 
-                                <div class="mb-4" id="batalyon-group" style="display: none;">
+                                <div class="mb-4" id="batalyon-group" style="display: <?php echo $user['role'] == 'kadet' ? 'block' : 'none'; ?>;">
                                     <div class="p-3 bg-light rounded-4 border border-warning">
                                         <label class="form-label fw-bold text-dark mb-2">Pilih Batalyon</label>
                                         <div class="d-flex gap-3">
                                             <?php foreach(['I', 'II', 'III', 'IV'] as $bat): ?>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="batalyon" id="bat<?php echo $bat; ?>" 
-                                                           value="<?php echo $bat; ?>" <?php echo $user['batalyon'] == $bat ? 'checked' : ''; ?>>
+                                                           value="<?php echo $bat; ?>" <?php echo ($user['batalyon'] == $bat) ? 'checked' : ''; ?>>
                                                     <label class="form-check-label fw-bold" for="bat<?php echo $bat; ?>"><?php echo $bat; ?></label>
                                                 </div>
                                             <?php endforeach; ?>
@@ -109,6 +124,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                                     <input type="password" class="form-control form-control-lg border-0 bg-light rounded-pill px-4" 
                                            name="password" placeholder="<?php echo $is_edit ? 'Kosongkan jika tetap' : 'Password baru'; ?>" 
                                            <?php echo !$is_edit ? 'required' : ''; ?>>
+                                    <?php if($is_edit): ?>
+                                        <small class="text-muted ms-3">*Biarkan kosong jika tidak ingin mengubah password.</small>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="d-grid gap-3">
@@ -134,10 +152,17 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     function toggleBatalyon() {
         var role = document.getElementById('role').value;
         var group = document.getElementById('batalyon-group');
-        if (role === 'kadet') group.style.display = 'block';
-        else group.style.display = 'none';
+        
+        if (role === 'kadet') {
+            group.style.display = 'block';
+        } else {
+            group.style.display = 'none';
+            // Uncheck radio buttons jika bukan kadet (opsional, tapi bagus untuk data bersih)
+            var radios = document.getElementsByName('batalyon');
+            for(var i=0; i<radios.length; i++) radios[i].checked = false;
+        }
     }
-    window.onload = toggleBatalyon;
+    // Tidak perlu window.onload di sini karena sudah dihandle php style display block/none
 </script>
 </body>
 </html>
