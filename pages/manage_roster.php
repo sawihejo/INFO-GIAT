@@ -58,7 +58,7 @@ try {
                         </div>
                         
                         <div class="card-body p-4 p-md-5">
-                            <form action="../process/insert_roster.php" method="POST">
+                            <form action="../process/manage_roster_process.php" method="POST">
                                 
                                 <div class="mb-4">
                                     <label for="tanggal_piket" class="form-label fw-bold text-muted small text-uppercase">Tanggal Piket</label>

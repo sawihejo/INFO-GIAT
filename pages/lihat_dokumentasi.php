@@ -9,11 +9,24 @@ if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'organik') {
 }
 
 require '../config/db.php';
+
 $tanggal = isset($_GET['t']) ? $_GET['t'] : date('Y-m-d');
+$kategori = isset($_GET['kategori']) ? trim($_GET['kategori']) : '';
 
 try {
-    $stmt = $pdo->prepare("SELECT d.*, u.nama as nama_kadet FROM tbl_dokumentasi d JOIN users u ON d.kadet_id = u.id WHERE DATE(d.created_at) = :t ORDER BY d.created_at DESC");
-    $stmt->execute([':t' => $tanggal]);
+    // Build query with optional kategori filter
+    $sql = "SELECT d.*, u.nama as nama_kadet FROM tbl_dokumentasi d JOIN users u ON d.kadet_id = u.id WHERE DATE(d.created_at) = :t";
+    $params = [':t' => $tanggal];
+
+    if ($kategori !== '') {
+        $sql .= " AND d.kategori = :kategori";
+        $params[':kategori'] = $kategori;
+    }
+
+    $sql .= " ORDER BY d.created_at DESC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
     $docs = $stmt->fetchAll();
 } catch (PDOException $e) { die($e->getMessage()); }
 ?>
