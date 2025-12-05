@@ -79,22 +79,43 @@ try {
                                 </div>
 
                                 <div class="mb-5">
-                                    <label for="nama_piket" class="form-label fw-bold text-muted small text-uppercase">
-                                        Pilih Personil Jaga <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="bg-light rounded-4 p-3 border-0" style="max-height: 200px; overflow-y: auto;">
-                                        <select class="form-select border-0 bg-transparent" 
-                                                id="nama_piket" name="nama_piket[]" multiple required style="height: 150px;">
-                                            <option value="" disabled>Pilih Batalyon Terlebih Dahulu...</option>
-                                            
-                                            <?php foreach ($all_kadets as $k): ?>
-                                                <option value="<?php echo htmlspecialchars($k['nama']); ?>|<?php echo htmlspecialchars($k['phone']); ?>" 
-                                                        data-batalyon="<?php echo $k['batalyon']; ?>" 
-                                                        style="display: none;">
-                                                    <?php echo htmlspecialchars($k['nama']); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                    <label class="form-label fw-bold text-muted small text-uppercase">Pilih Personil Jaga per Grup <span class="text-danger">*</span></label>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                                <div class="bg-light rounded-4 p-3 border-0" style="max-height: 240px; overflow-y: auto;">
+                                                    <label class="small fw-semibold">Ketyon</label>
+                                                    <input id="search_ketyon" class="form-control form-control-sm mb-2" type="search" placeholder="Cari nama..." oninput="applySearchFilters()">
+                                                    <select class="form-select border-0 bg-transparent" 
+                                                            id="nama_ketyon" name="nama_ketyon[]" multiple required style="height: 150px;">
+                                                        <option value="" disabled>Pilih Batalyon Terlebih Dahulu...</option>
+                                                        <?php foreach ($all_kadets as $k): ?>
+                                                            <option value="<?php echo htmlspecialchars($k['nama']); ?>|<?php echo htmlspecialchars($k['phone']); ?>" 
+                                                                    data-batalyon="<?php echo $k['batalyon']; ?>" 
+                                                                    style="display: none;">
+                                                                <?php echo htmlspecialchars($k['nama']); ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="bg-light rounded-4 p-3 border-0" style="max-height: 240px; overflow-y: auto;">
+                                                <label class="small fw-semibold">Korsis</label>
+                                                <input id="search_korsis" class="form-control form-control-sm mb-2" type="search" placeholder="Cari nama..." oninput="applySearchFilters()">
+                                                <select class="form-select border-0 bg-transparent" 
+                                                        id="nama_korsis" name="nama_korsis[]" multiple required style="height: 150px;">
+                                                    <option value="" disabled>Pilih Batalyon Terlebih Dahulu...</option>
+                                                    <?php foreach ($all_kadets as $k): ?>
+                                                        <option value="<?php echo htmlspecialchars($k['nama']); ?>|<?php echo htmlspecialchars($k['phone']); ?>" 
+                                                                data-batalyon="<?php echo $k['batalyon']; ?>" 
+                                                                style="display: none;">
+                                                            <?php echo htmlspecialchars($k['nama']); ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-text mt-2 text-end">
                                         <small><i class="bi bi-info-circle"></i> Tahan tombol <b>CTRL</b> (Windows) atau <b>CMD</b> (Mac) untuk memilih lebih dari satu orang.</small>
@@ -128,39 +149,91 @@ try {
         document.getElementById("wrapper").classList.toggle("toggled"); 
     };
 
-    // 2. Filter Kadet Berdasarkan Batalyon (Logic Lama Dipertahankan)
+    // 2. Filter Kadet Berdasarkan Batalyon (update both Ketyon & Korsis selects)
     function filterKadet() {
         var batalyonPilihan = document.getElementById('batalyon').value;
-        var selectKadet = document.getElementById('nama_piket');
-        var options = selectKadet.getElementsByTagName('option');
-        
-        // Reset pilihan
-        selectKadet.selectedIndex = -1;
-
+        var selects = [document.getElementById('nama_ketyon'), document.getElementById('nama_korsis')];
         var adaKadet = false;
+
+        selects.forEach(function(sel) {
+            // Reset selection
+            if (sel) sel.selectedIndex = -1;
+            var options = sel ? sel.getElementsByTagName('option') : [];
+
+            for (var i = 0; i < options.length; i++) {
+                var opt = options[i];
+                if (opt.disabled) continue;
+                if (opt.getAttribute('data-batalyon') === batalyonPilihan) {
+                    opt.style.display = 'block';
+                    adaKadet = true;
+                } else {
+                    opt.style.display = 'none';
+                }
+            }
+
+            // Update placeholder text per select
+            if (options.length > 0) {
+                if (!adaKadet) {
+                    options[0].text = "Tidak ada kadet di Batalyon ini";
+                    options[0].style.display = 'block';
+                } else {
+                    options[0].text = "-- Pilih Personil (Tahan CTRL untuk banyak) --";
+                    options[0].style.display = 'block';
+                }
+            }
+        });
+
+        // Setelah mengubah tampilan berdasarkan batalyon, terapkan filter pencarian
+        applySearchFilters();
+    }
+
+    // 3. Pencarian cepat: filter opsi di setiap select berdasarkan input pencarian
+    function applySearchFilters() {
+        var qK = document.getElementById('search_ketyon') ? document.getElementById('search_ketyon').value.trim().toLowerCase() : '';
+        var qKo = document.getElementById('search_korsis') ? document.getElementById('search_korsis').value.trim().toLowerCase() : '';
+        var batalyonPilihan = document.getElementById('batalyon').value;
+
+        filterOptionsByQuery('nama_ketyon', qK, batalyonPilihan);
+        filterOptionsByQuery('nama_korsis', qKo, batalyonPilihan);
+    }
+
+    function filterOptionsByQuery(selectId, query, batalyonPilihan) {
+        var sel = document.getElementById(selectId);
+        if (!sel) return;
+        var options = sel.getElementsByTagName('option');
+        var anyVisible = false;
 
         for (var i = 0; i < options.length; i++) {
             var opt = options[i];
-            
-            // Skip opsi placeholder pertama
-            if (opt.disabled) continue;
+            if (opt.disabled) continue; // keep placeholder
 
-            // Cek atribut data-batalyon
-            if (opt.getAttribute('data-batalyon') === batalyonPilihan) {
+            // First, check batalyon match (if not match, keep hidden)
+            var matchesBatalyon = (opt.getAttribute('data-batalyon') === batalyonPilihan);
+
+            if (!matchesBatalyon) {
+                opt.style.display = 'none';
+                continue;
+            }
+
+            // Then check text match
+            var text = (opt.textContent || opt.innerText || '').toLowerCase();
+            if (query === '' || text.indexOf(query) !== -1) {
                 opt.style.display = 'block';
-                adaKadet = true;
+                anyVisible = true;
             } else {
                 opt.style.display = 'none';
             }
         }
 
-        // Handle placeholder message
-        if (!adaKadet) {
-            options[0].text = "Tidak ada kadet di Batalyon ini";
-            options[0].style.display = 'block';
-        } else {
-            options[0].text = "-- Pilih Personil (Tahan CTRL untuk banyak) --";
-            options[0].style.display = 'block';
+        // Update placeholder first option depending on anyVisible
+        if (options.length > 0) {
+            if (!anyVisible) {
+                options[0].text = "Tidak ada kadet yang cocok";
+                options[0].style.display = 'block';
+            } else {
+                options[0].text = "-- Pilih Personil (Tahan CTRL untuk banyak) --";
+                options[0].style.display = 'block';
+            }
         }
     }
 </script>

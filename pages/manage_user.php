@@ -49,7 +49,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
                         </div>
                         
                         <div class="card-body p-4 p-md-5">
-                            <form action="../process/insert_user.php" method="POST">
+                            <form action="../process/manage_user_process.php" method="POST">
                                 <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
 
                                 <div class="mb-4">

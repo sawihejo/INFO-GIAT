@@ -11,6 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 // 2. Ambil data dari form
 $nama = $_POST['nama'];
+$username = isset($_POST['username']) ? trim($_POST['username']) : null;
 $role = $_POST['role'];
 $telegram_id = !empty($_POST['telegram_id']) ? $_POST['telegram_id'] : null;
 $phone = !empty($_POST['phone']) ? $_POST['phone'] : null;
@@ -29,14 +30,16 @@ try {
         
         $sql_parts = [
             "nama = :nama",
+            "username = :username",
             "role = :role",
             "batalyon = :batalyon",
             "telegram_id = :telegram_id",
             "phone = :phone"
         ];
-        
+
         $params = [
             ':nama' => $nama,
+            ':username' => $username,
             ':role' => $role,
             ':batalyon' => $batalyon,
             ':telegram_id' => $telegram_id,
@@ -66,11 +69,12 @@ try {
         }
 
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
-        $sql = "INSERT INTO users (nama, password, role, batalyon, telegram_id, phone) 
-                VALUES (:nama, :password, :role, :batalyon, :telegram_id, :phone)";
+        $sql = "INSERT INTO users (nama, username, password, role, batalyon, telegram_id, phone) 
+            VALUES (:nama, :username, :password, :role, :batalyon, :telegram_id, :phone)";
         
         $params = [
             ':nama' => $nama,
+            ':username' => $username,
             ':password' => $password_hash,
             ':role' => $role,
             ':batalyon' => $batalyon,

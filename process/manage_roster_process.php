@@ -15,22 +15,38 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 $user_input_id = $_SESSION['user_id'];
 $tanggal_piket = $_POST['tanggal_piket'];
 $batalyon = $_POST['batalyon']; // Batalyon yang dipilih
-$nama_piket_array = $_POST['nama_piket']; // Ini sekarang ARRAY, cth: ["Budi|0812", "Dono|0813"]
+$ketyon_array = isset($_POST['nama_ketyon']) ? $_POST['nama_ketyon'] : [];
+$korsis_array = isset($_POST['nama_korsis']) ? $_POST['nama_korsis'] : [];
 
-// 3. Olah array menjadi string
-$nama_list = [];
-$kontak_list = [];
-
-foreach ($nama_piket_array as $piket_data) {
-    // Pisahkan string "Nama|Kontak"
-    $parts = explode('|', $piket_data);
-    $nama_list[] = $parts[0]; // Ambil nama
-    $kontak_list[] = $parts[1]; // Ambil kontak
+// Parser helper: from array of "Name|Phone" to arrays
+function split_names_and_contacts($arr) {
+    $names = [];
+    $contacts = [];
+    foreach ($arr as $item) {
+        $parts = explode('|', $item);
+        $names[] = $parts[0];
+        $contacts[] = isset($parts[1]) ? $parts[1] : '';
+    }
+    return [$names, $contacts];
 }
 
-// Gabungkan menjadi string yang siap disimpan ke DB
-$nama_piket = implode(', ', $nama_list);
-$kontak_piket = implode(', ', $kontak_list);
+list($names_ketyon, $contacts_ketyon) = split_names_and_contacts($ketyon_array);
+list($names_korsis, $contacts_korsis) = split_names_and_contacts($korsis_array);
+
+// Build grouped string with labels so it can be displayed as sections later
+$nama_groups = [];
+$kontak_groups = [];
+if (!empty($names_ketyon)) {
+    $nama_groups[] = 'Ketyon: ' . implode(', ', $names_ketyon);
+    $kontak_groups[] = 'Ketyon: ' . implode(', ', $contacts_ketyon);
+}
+if (!empty($names_korsis)) {
+    $nama_groups[] = 'Korsis: ' . implode(', ', $names_korsis);
+    $kontak_groups[] = 'Korsis: ' . implode(', ', $contacts_korsis);
+}
+
+$nama_piket = implode("\n", $nama_groups); // store groups separated by newline
+$kontak_piket = implode("\n", $kontak_groups);
 
 try {
     // 3. Query Canggih: INSERT ... ON DUPLICATE KEY UPDATE

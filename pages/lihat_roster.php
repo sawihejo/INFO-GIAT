@@ -47,14 +47,41 @@ try {
                                 </div>
                                 <div class="card-body p-4 text-center">
                                     <h6 class="text-muted fw-bold mb-3">PETUGAS JAGA</h6>
-                                    <p class="fw-bold text-dark fs-5 mb-4"><?php echo nl2br(htmlspecialchars($r['nama_piket'])); ?></p>
-                                    
+                                    <?php
+                                        // Nama_piket and kontak_piket may be stored as grouped lines, e.g. "Ketyon: A, B\nKorsis: C, D"
+                                        $groups = preg_split('/\r?\n/', $r['nama_piket']);
+                                        $kontak_groups = preg_split('/\r?\n/', $r['kontak_piket']);
+                                        foreach ($groups as $idx => $grp) {
+                                            // Expect format "Label: names..."; otherwise print raw
+                                            if (strpos($grp, ':') !== false) {
+                                                list($label, $members) = explode(':', $grp, 2);
+                                                echo '<div class="mb-3">';
+                                                echo '<h6 class="text-maroon fw-bold mb-1" style="font-size:0.95rem;">' . htmlspecialchars(trim($label)) . '</h6>';
+                                                echo '<p class="fw-bold text-dark fs-6 mb-0">' . htmlspecialchars(trim($members)) . '</p>';
+                                                echo '</div>';
+                                            } else {
+                                                echo '<p class="fw-bold text-dark fs-5 mb-4">' . htmlspecialchars($grp) . '</p>';
+                                            }
+                                        }
+                                    ?>
+
                                     <hr class="border-light">
-                                    
-                                    <h6 class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.75rem;">Kontak</h6>
-                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2 border">
-                                        <i class="bi bi-telephone-fill text-success me-1"></i> <?php echo $r['kontak_piket']; ?>
-                                    </span>
+
+                                    <?php
+                                        // Render kontak groups similarly (show icons per group)
+                                        foreach ($kontak_groups as $idx => $kgrp) {
+                                            if (strpos($kgrp, ':') !== false) {
+                                                list($klabel, $kcontacts) = explode(':', $kgrp, 2);
+                                                echo '<div class="d-flex align-items-center justify-content-center gap-2 mt-2">';
+                                                echo '<span class="badge bg-light text-dark rounded-pill px-3 py-2 border"><i class="bi bi-telephone-fill text-success me-1"></i> ' . htmlspecialchars(trim($kcontacts)) . '</span>';
+                                                echo '</div>';
+                                            } else {
+                                                echo '<div class="d-flex align-items-center justify-content-center gap-2 mt-2">';
+                                                echo '<span class="badge bg-light text-dark rounded-pill px-3 py-2 border"><i class="bi bi-telephone-fill text-success me-1"></i> ' . htmlspecialchars($kgrp) . '</span>';
+                                                echo '</div>';
+                                            }
+                                        }
+                                    ?>
                                 </div>
                             </div>
                         </div>
