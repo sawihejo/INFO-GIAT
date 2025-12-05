@@ -1,0 +1,101 @@
+/* Palet Warna Resmi: #800000 (Maroon), #004D40 (Hijau), #FFD700 (Emas) */
+
+/* --- Tampilan Global & Font --- */
+body {
+    background-color: #f8f9fa; /* Latar abu-abu muda */
+    font-family: 'Inter', sans-serif; /* Font default */
+    font-size: 0.95rem; /* Sedikit lebih kecil agar rapi */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif; /* Font untuk judul */
+    font-weight: 600;
+}
+
+/* --- Elemen Umum --- */
+.card {
+    border-top: 4px solid #800000; /* Garis atas kartu Maroon */
+    border-radius: 0.5rem; /* Sudut lebih tumpul */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Bayangan halus */
+}
+
+/* Efek Hover Halus */
+.btn, .nav-link, .card {
+    transition: all 0.2s ease-in-out;
+}
+
+/* --- Navbar (Maroon & Putih) --- */
+.navbar {
+    background-color: #800000 !important; /* Maroon sebagai latar Navbar */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.navbar-brand, .navbar-nav .nav-link {
+    color: #FFFFFF !important;
+}
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+    color: #FFD700 !important; /* Emas sebagai Hover & Active */
+}
+
+/* --- Tombol Utama (Primary -> Hijau) --- */
+.btn-primary {
+    background-color: #004D40; /* Hijau Gelap */
+    border-color: #004D40;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #00332A; /* Hijau lebih gelap untuk hover */
+    border-color: #00332A;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* --- Tombol Lainnya --- */
+.btn-secondary { /* Tombol "Kembali" / "Batal" */
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.btn-warning { /* Tombol "Edit" */
+    background-color: #FFC107; /* Kuning mendekati Emas */
+    border-color: #FFC107;
+    color: #212529; /* Teks gelap agar terbaca */
+}
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
+
+.btn-danger { /* Tombol "Hapus" */
+    background-color: #800000 !important; /* Maroon */
+    border-color: #800000 !important;
+}
+.btn-danger:hover {
+    background-color: #AA0000 !important; /* Merah lebih terang */
+    border-color: #AA0000 !important;
+}
+
+/* --- Header Kartu (Untuk Dashboard Organik) --- */
+.card-header {
+    background-color: #800000 !important; /* Maroon sebagai header */
+    color: #FFFFFF !important;
+    border-bottom: none !important;
+}
+
+/* --- Ikon Sorotan Emas (Contoh untuk Dashboard Piket) --- */
+.dashboard-icon .fs-1 { /* Ikon besar di dashboard piket */
+    color: #FFD700 !important; /* Emas */
+}
+
+/* --- Badge Role --- */
+.badge.bg-danger { background-color: #800000 !important; } /* Admin -> Maroon */
+.badge.bg-info { background-color: #004D40 !important; } /* Organik -> Hijau */
+.badge.bg-primary { background-color: #6c757d !important; } /* Kadet -> Abu-abu */
+
+/* Tambahan: Hover pada baris tabel */
+.table-hover tbody tr:hover {
+    background-color: #f5f5f5; /* Abu-abu sangat terang */
+}

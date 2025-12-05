@@ -1,0 +1,146 @@
+/* assets/css/admin_genz.css */
+
+/* --- 1. FONTS & BASE --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-maroon: #800000;
+    --primary-dark: #2b0000;
+    --accent-gold: #FFD700;
+    --bg-light: #F0F2F5;
+    --glass-white: rgba(255, 255, 255, 0.95);
+    --sidebar-width: 280px;
+}
+
+body {
+    font-family: 'Outfit', sans-serif; /* Font Gen Z populer: Outfit / Plus Jakarta Sans */
+    background-color: var(--bg-light);
+    overflow-x: hidden;
+}
+
+/* --- 2. LAYOUT WRAPPER (Sidebar + Content) --- */
+#wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+}
+
+/* --- 3. SIDEBAR GEN Z --- */
+#sidebar-wrapper {
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+    background: linear-gradient(160deg, var(--primary-maroon) 0%, var(--primary-dark) 100%);
+    color: white;
+    transition: all 0.3s ease;
+    border-top-right-radius: 30px; /* Sudut tumpul unik */
+    border-bottom-right-radius: 30px;
+    margin-right: 15px;
+    box-shadow: 10px 0 20px rgba(128, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+/* Sidebar Header */
+.sidebar-heading {
+    padding: 2rem 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Menu Items (Floating Pills) */
+.list-group-item {
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 15px 25px;
+    margin: 5px 15px;
+    border-radius: 15px !important; /* Pill shape */
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.list-group-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--accent-gold);
+    transform: translateX(5px); /* Geser dikit pas hover */
+}
+
+.list-group-item.active {
+    background: var(--accent-gold);
+    color: var(--primary-dark);
+    font-weight: 700;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); /* Glowing effect */
+}
+
+/* --- 4. CONTENT AREA --- */
+#page-content-wrapper {
+    width: 100%;
+    padding: 20px;
+}
+
+/* Navbar Top (Khusus tombol toggle di mobile) */
+.top-navbar {
+    background: transparent;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* --- 5. CARDS MODERN (Bento Grid Style) --- */
+.card-modern {
+    background: var(--glass-white);
+    border: none;
+    border-radius: 25px; /* Super rounded */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(128, 0, 0, 0.15);
+}
+
+.card-header-modern {
+    background: transparent;
+    border-bottom: none;
+    padding: 25px 25px 5px 25px;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+}
+
+.table-modern thead th {
+    background-color: rgba(128, 0, 0, 0.05);
+    color: var(--primary-maroon);
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+}
+
+.table-modern tbody td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    vertical-align: middle;
+}
+
+/* --- 6. RESPONSIVE (Mobile) --- */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: calc(-1 * var(--sidebar-width));
+        border-radius: 0; 
+    }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
