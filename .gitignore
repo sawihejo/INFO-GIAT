@@ -1,10 +1,5 @@
-# Abaikan file konfigurasi database (karena tiap laptop beda password)
 config/db.php
-
-# Abaikan folder upload (biar server github gak penuh sampah foto testing)
 uploads/*
 !uploads/.gitkeep
-
-# Abaikan file sistem operasi
 .DS_Store
 Thumbs.db
